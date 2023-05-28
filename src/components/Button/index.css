@@ -1,0 +1,26 @@
+.wrapper-button{
+    margin-top: 15px;
+    margin-left: 20px;
+    margin-right: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.button-left{
+    display: flex;
+    gap: 10px;
+}
+
+.active{
+    background-color: aquamarine;
+}
+
+button{
+    background-color: #fff;
+    padding: 4px 10px;
+}
+
+button:hover{
+    background-color: aquamarine;
+    cursor: pointer;
+}
