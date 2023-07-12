@@ -1,16 +1,31 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./index.css";
+import Button from "../Button";
 
 function Main() {
   const [inputValue, setInputValue] = useState("");
   const [todos, setTodos] = useState([]);
-  let count = 0;
+  const [count, setCount] = useState(0);
+
+  const handleCheckboxChange = (index) => (event) => {
+    const newTodos = [...todos];
+    newTodos[index].isCompleted = event.target.checked;
+    setTodos(newTodos);
+  };
+
+  const handleCheckboxAllChange = (e) => {
+    const updatedTodos = todos.map((todo) => ({
+      ...todo,
+      isCompleted: e.target.checked,
+    }));
+    setTodos(updatedTodos);
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      setTodos([...todos, { text: inputValue }]);
+      setTodos([...todos, { text: inputValue, isCompleted: false }]);
       setInputValue("");
     }
   };
@@ -19,9 +34,24 @@ function Main() {
     setInputValue(event.target.value);
   };
 
+  const handleRemoveTodo = (index) => () => {
+    const updatedTodos = todos.filter((_, todoIndex) => todoIndex !== index);
+    setTodos(updatedTodos);
+  };
+
+  const handleClearCompleted = () => {
+    const updatedTodos = todos.filter((todo) => !todo.isCompleted);
+    setTodos(updatedTodos);
+  };
+
+  useEffect(() => {
+    const numCompleted = todos.filter((todo) => todo.isCompleted).length;
+    setCount(numCompleted);
+  }, [todos]);
+
   return (
     <div className="main-wrapper">
-      <h3>Svelte Todo App</h3>
+      <h3>React Todo App</h3>
       <input
         value={inputValue}
         onChange={handleChange}
@@ -31,29 +61,37 @@ function Main() {
         placeholder="Insert todo item ..."
       />
       <ul>
-        <div className="check-list">
-          {todos.map((todo, index) => (
-            <li key={index}>
-              <div>
-                <input className="check todo" type="checkbox" />
-                <span>{todo.text}</span>
-              </div>
-              <div>
-                <FontAwesomeIcon className="icon" icon={faXmark} />
-              </div>
-            </li>
-          ))}
-        </div>
+        {todos.map((todo, index) => (
+          <li key={index}>
+            <div>
+              <input
+                className="check"
+                type="checkbox"
+                checked={todo.isCompleted}
+                onChange={handleCheckboxChange(index)}
+              />
+              <span>{todo.text}</span>
+            </div>
+            <FontAwesomeIcon
+              className="icon"
+              icon={faXmark}
+              onClick={handleRemoveTodo(index)}
+            />
+          </li>
+        ))}
       </ul>
       <div className="wrapper-check-all">
-        <div className="check-all">
-          <input className="check" type="checkbox" />
+        <div>
+          <input
+            className="check"
+            type="checkbox"
+            onChange={handleCheckboxAllChange}
+          />
           <span>Check All</span>
         </div>
-        <div className="check-all">
-          <span>{count} items left</span>
-        </div>
+        <span>{count} items left</span>
       </div>
+      <Button clearCompleted={handleClearCompleted} />
     </div>
   );
 }

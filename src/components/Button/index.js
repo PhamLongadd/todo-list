@@ -1,16 +1,12 @@
 import "./index.css";
+import React from "react";
 
-function Button() {
+function Button({ clearCompleted }) {
   return (
     <div className="wrapper-button">
-      <div className="button-left">
-        <button className="button active">All</button>
-        <button className="button">Active</button>
-        <button className="button">Completed</button>
-      </div>
-      <div className="button-right">
-        <button className="button">Clear Completed</button>
-      </div>
+      <button className="button" onClick={clearCompleted}>
+        Clear Completed
+      </button>
     </div>
   );
 }
